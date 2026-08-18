@@ -1,3 +1,3 @@
 # School Inventory
 
-Project import in progress.
+Preparing portfolio import.
