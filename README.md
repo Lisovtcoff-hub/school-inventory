@@ -2,106 +2,63 @@
 
 [![CI](https://github.com/Lisovtcoff-hub/school-inventory/actions/workflows/ci.yml/badge.svg)](https://github.com/Lisovtcoff-hub/school-inventory/actions/workflows/ci.yml)
 
-A cross-platform asset management system for schools and other educational organizations. The project combines a FastAPI backend with an Android and Windows Flutter client.
+A cross-platform asset management system for schools and other educational organizations. The project combines a FastAPI backend with an Android and Windows Flutter client, tracks equipment throughout its lifecycle, generates QR labels, keeps an audit history, and produces regulatory and operational PDF reports.
 
-The system tracks equipment throughout its lifecycle, generates QR labels, keeps an audit history and produces regulatory and operational PDF reports.
+> This public repository is a portfolio-safe source version. It contains no school records, real license codes, or deployment credentials.
 
-The repository is organized as a monorepo with independently testable backend and frontend applications.
+## What the project does
 
-## Highlights
-
-- Organization activation through license codes
-- JWT authentication and role-based access for administrators, editors and viewers
-- Multi-tenant isolation by organization
-- Equipment catalog with search, filters, pagination and soft deletion
-- Automatically generated 16-digit asset identifiers
-- Audit history for important field changes and manual notes
-- QR codes for individual assets and printable QR label sheets
-- Dashboard statistics across the complete inventory
-- OO-2 section 2.1 calculation and PDF export
-- Classroom passport report with validation warnings and PDF export
-- PostgreSQL migrations with Alembic
-- Automated backend and Flutter checks in GitHub Actions
+- activates organizations through license codes;
+- provides JWT authentication and administrator, editor, and viewer roles;
+- isolates data by organization;
+- manages an equipment catalog with search, filters, pagination, and soft deletion;
+- generates 16-digit asset identifiers and printable QR labels;
+- records important field changes and manual audit notes;
+- calculates dashboard statistics across the inventory;
+- generates OO-2 section 2.1 and classroom passport PDF reports;
+- validates the PostgreSQL migration chain and application behavior in CI.
 
 ## Architecture
 
-```mermaid
-flowchart LR
-    Client[Flutter client\nAndroid and Windows]
-    API[FastAPI application]
-    DB[(PostgreSQL)]
-    Reports[QR and PDF services]
-
-    Client -->|REST + JWT| API
-    API --> DB
-    API --> Reports
+```text
+Flutter client (Android / Windows)
+               |
+               | REST + JWT
+               v
+        FastAPI backend
+          /           \
+ PostgreSQL       QR / PDF services
 ```
 
-The backend is organized into API routes, services and repositories. The Flutter application is grouped by product feature and communicates with the backend through one authenticated API client.
+The backend is organized into API routes, services, repositories, and SQLAlchemy models. The Flutter application is grouped by product feature and communicates through one authenticated API client.
 
-## Technology
+See [docs/architecture.md](docs/architecture.md) for additional details.
+
+## Technology stack
 
 - **Backend:** Python 3.12, FastAPI, SQLAlchemy 2, Alembic, Pydantic
-- **Database:** PostgreSQL; SQLite is used for isolated tests
+- **Database:** PostgreSQL; SQLite for isolated tests
 - **Client:** Flutter, Dart, Provider, GoRouter, Dio
 - **Documents:** ReportLab, Pillow, qrcode
 - **Infrastructure:** Docker Compose, GitHub Actions
 - **Testing:** Pytest, FastAPI TestClient, Flutter Test
 
-## Repository structure
-
-```text
-backend/      FastAPI application, migrations and API tests
-frontend/     Flutter application and Dart tests
-docs/         Architecture and security notes
-scripts/      Reproducible Flutter platform bootstrap
-compose.yaml  PostgreSQL and backend development stack
-```
-
-## Start the backend with Docker
+## Quick start
 
 ```bash
 cp .env.example .env
 docker compose up --build
 ```
 
-The API is available at:
+The API is available at `http://localhost:8000`, OpenAPI at `/docs`, and the health check at `/health`.
 
-- OpenAPI: `http://localhost:8000/docs`
-- Health check: `http://localhost:8000/health`
-
-Before using a production environment, replace `SECRET_KEY` and database credentials in `.env`.
-
-## Create a development license
-
-After the backend is running:
+Create a development license after startup:
 
 ```bash
 docker compose exec api python -m app.scripts.create_license
 ```
 
-Use the printed code on the organization activation screen.
-
-## Prepare and run the Flutter client
-
-The repository keeps application source code under version control and generates standard Android and Windows runner files reproducibly:
-
-```bash
-python scripts/bootstrap_flutter.py
-cd frontend
-flutter pub get
-flutter run -d windows
-```
-
-For Android Emulator, run with the emulator backend address:
-
-```bash
-flutter run -d android --dart-define=API_BASE_URL=http://10.0.2.2:8000/api/v1
-```
-
-For a physical device, replace the host with the computer's LAN address.
-
-## Development checks
+## Development and tests
 
 Backend:
 
@@ -114,7 +71,7 @@ alembic upgrade head
 pytest
 ```
 
-Flutter:
+Client:
 
 ```bash
 python scripts/bootstrap_flutter.py
@@ -124,19 +81,35 @@ flutter analyze
 flutter test
 ```
 
-CI validates the Alembic migration chain against a clean PostgreSQL instance, executes backend API tests and runs Flutter analysis and tests.
+Run Android Emulator with `--dart-define=API_BASE_URL=http://10.0.2.2:8000/api/v1`.
 
-## Security notes
+## Project structure
+
+```text
+backend/      FastAPI application, migrations, and API tests
+frontend/     Flutter application and Dart tests
+docs/         architecture and security notes
+scripts/      reproducible Flutter platform bootstrap
+compose.yaml  PostgreSQL and backend development stack
+```
+
+## Security and operational notes
 
 - Passwords are stored as bcrypt hashes.
 - JWT secrets and database credentials are loaded from environment variables.
-- The application rejects placeholder secrets and non-PostgreSQL databases in production mode.
-- Organization scope is derived from the authenticated user instead of request payloads.
+- Production mode rejects placeholder secrets and unsupported database configuration.
+- Organization scope is derived from the authenticated user.
 - Viewer accounts cannot modify inventory.
-- Local databases, environment files and generated platform artifacts are excluded from Git.
+- Regulatory reports are calculation aids and must be checked against current official requirements.
 
-See [docs/architecture.md](docs/architecture.md) and [docs/security.md](docs/security.md) for implementation details.
+See [docs/security.md](docs/security.md) for implementation details.
 
-## Project scope
+## Project status
 
-This repository is a portfolio-safe version of an asset management product. It contains no school records, real license codes or deployment credentials. Regulatory reports are calculation aids and should be reviewed against the current official reporting requirements before submission.
+The repository demonstrates a complete asset-management workflow with backend and client CI. Generated platform files are reproducible, while local databases, environment files, and operational data remain outside Git.
+
+## Author
+
+Sergey Inozemtsev — Python backend developer
+
+GitHub: https://github.com/Lisovtcoff-hub
