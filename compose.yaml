@@ -1,0 +1,34 @@
+services:
+  database:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-school_inventory}
+      POSTGRES_USER: ${POSTGRES_USER:-school_inventory}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-school_inventory}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-school_inventory} -d ${POSTGRES_DB:-school_inventory}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - school_inventory_data:/var/lib/postgresql/data
+
+  api:
+    build: ./backend
+    environment:
+      PROJECT_NAME: ${PROJECT_NAME:-School Inventory API}
+      API_V1_PREFIX: ${API_V1_PREFIX:-/api/v1}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-school_inventory}:${POSTGRES_PASSWORD:-school_inventory}@database:5432/${POSTGRES_DB:-school_inventory}
+      SECRET_KEY: ${SECRET_KEY:-development-only-secret-change-before-production}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-1440}
+      JWT_ALGORITHM: ${JWT_ALGORITHM:-HS256}
+      BACKEND_CORS_ORIGINS: ${BACKEND_CORS_ORIGINS:-http://localhost:3000,http://localhost:5173,http://localhost:8080}
+    ports:
+      - "8000:8000"
+    depends_on:
+      database:
+        condition: service_healthy
+
+volumes:
+  school_inventory_data:
