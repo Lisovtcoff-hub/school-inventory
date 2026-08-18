@@ -9,7 +9,6 @@ permissions:
 
 jobs:
   unpack:
-    if: ${{ hashFiles('.bootstrap/part-*.txt') != '' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,6 +16,7 @@ jobs:
       - name: Rebuild and unpack project
         run: |
           set -euo pipefail
+          test -n "$(find .bootstrap -maxdepth 1 -name 'part-*.txt' -print -quit)"
           cat .bootstrap/part-*.txt | base64 --decode > /tmp/project.tar.xz
           test "$(sha256sum /tmp/project.tar.xz | awk '{print $1}')" = "4f28d69e4c6d7eb89823dc13293f7d25291bd03dbb82ebc907c47ad9d17f0de8"
           mkdir /tmp/project
