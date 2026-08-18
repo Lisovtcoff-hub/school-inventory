@@ -6,6 +6,8 @@ A cross-platform asset management system for schools and other educational organ
 
 The system tracks equipment throughout its lifecycle, generates QR labels, keeps an audit history and produces regulatory and operational PDF reports.
 
+The repository is organized as a monorepo with independently testable backend and frontend applications.
+
 ## Highlights
 
 - Organization activation through license codes
