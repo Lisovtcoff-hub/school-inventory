@@ -31,6 +31,7 @@ jobs:
       DATABASE_URL: postgresql+psycopg://school_inventory:test-password@127.0.0.1:5432/school_inventory_test
       SECRET_KEY: ci-secret-key-for-tests-only-at-least-32-characters
       BACKEND_CORS_ORIGINS: http://localhost:3000
+      PYTHONPATH: backend
 
     steps:
       - uses: actions/checkout@v4

@@ -26,11 +26,16 @@ def main() -> None:
         check=True,
     )
 
+    generated_widget_test = FRONTEND / "test/widget_test.dart"
+    if generated_widget_test.exists() and "MyApp" in generated_widget_test.read_text(
+        encoding="utf-8"
+    ):
+        generated_widget_test.unlink()
+
     manifest = FRONTEND / "android/app/src/main/AndroidManifest.xml"
     text = manifest.read_text(encoding="utf-8")
     permission = '<uses-permission android:name="android.permission.CAMERA" />'
     if permission not in text:
-        text = text.replace("<manifest", f"<manifest", 1)
         marker = ">"
         index = text.find(marker)
         text = text[: index + 1] + f"\n    {permission}" + text[index + 1 :]
