@@ -1,6 +1,6 @@
 # School Inventory
 
-[![CI](https://github.com/Lisovtcoff-hub/school-inventory/actions/workflows/ci.yml/badge.svg)](https://github.com/Lisovtcoff-hub/school-inventory/actions/workflows/ci.yml)
+[![CI](https://github.com/lisovcoff/school-inventory/actions/workflows/ci.yml/badge.svg)](https://github.com/lisovcoff/school-inventory/actions/workflows/ci.yml)
 
 A cross-platform asset management system for schools and other educational organizations. The project combines a FastAPI backend with an Android and Windows Flutter client, tracks equipment throughout its lifecycle, generates QR labels, keeps an audit history, and produces regulatory and operational PDF reports.
 
@@ -112,4 +112,4 @@ The repository demonstrates a complete asset-management workflow with backend an
 
 Sergey Inozemtsev — Python backend developer
 
-GitHub: https://github.com/Lisovtcoff-hub
+GitHub: https://github.com/lisovcoff
