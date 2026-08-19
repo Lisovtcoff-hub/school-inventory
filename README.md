@@ -2,21 +2,26 @@
 
 [![CI](https://github.com/lisovcoff/school-inventory/actions/workflows/ci.yml/badge.svg)](https://github.com/lisovcoff/school-inventory/actions/workflows/ci.yml)
 
-A cross-platform asset management system for schools and other educational organizations. The project combines a FastAPI backend with an Android and Windows Flutter client, tracks equipment throughout its lifecycle, generates QR labels, keeps an audit history, and produces regulatory and operational PDF reports.
+Asset management platform for schools and similar organizations. The project combines a FastAPI backend with Flutter clients for Android and Windows, supports organization-level data isolation, generates QR labels, keeps an audit history, and produces PDF reports.
 
-> This public repository is a portfolio-safe source version. It contains no school records, real license codes, or deployment credentials.
+## Highlights
 
-## What the project does
+- organization activation through license codes;
+- JWT authentication with administrator, editor, and viewer roles;
+- inventory catalog with search, filters, pagination, and soft deletion;
+- generated 16-digit asset identifiers and printable QR labels;
+- audit trail for important field changes and manual notes;
+- dashboard statistics and PDF exports for operational reporting;
+- backend and client CI coverage.
 
-- activates organizations through license codes;
-- provides JWT authentication and administrator, editor, and viewer roles;
-- isolates data by organization;
-- manages an equipment catalog with search, filters, pagination, and soft deletion;
-- generates 16-digit asset identifiers and printable QR labels;
-- records important field changes and manual audit notes;
-- calculates dashboard statistics across the inventory;
-- generates OO-2 section 2.1 and classroom passport PDF reports;
-- validates the PostgreSQL migration chain and application behavior in CI.
+## Stack
+
+- **Backend:** Python 3.12, FastAPI, SQLAlchemy 2, Alembic, Pydantic
+- **Database:** PostgreSQL; SQLite for isolated tests
+- **Client:** Flutter, Dart, Provider, GoRouter, Dio
+- **Documents:** ReportLab, Pillow, qrcode
+- **Infrastructure:** Docker Compose, GitHub Actions
+- **Testing:** Pytest, FastAPI TestClient, Flutter Test
 
 ## Architecture
 
@@ -30,20 +35,11 @@ Flutter client (Android / Windows)
  PostgreSQL       QR / PDF services
 ```
 
-The backend is organized into API routes, services, repositories, and SQLAlchemy models. The Flutter application is grouped by product feature and communicates through one authenticated API client.
+The backend is split into API routes, services, repositories, and SQLAlchemy models. The Flutter application is organized by product feature and uses a single authenticated API client.
 
-See [docs/architecture.md](docs/architecture.md) for additional details.
+Additional notes: [architecture](docs/architecture.md), [security](docs/security.md).
 
-## Technology stack
-
-- **Backend:** Python 3.12, FastAPI, SQLAlchemy 2, Alembic, Pydantic
-- **Database:** PostgreSQL; SQLite for isolated tests
-- **Client:** Flutter, Dart, Provider, GoRouter, Dio
-- **Documents:** ReportLab, Pillow, qrcode
-- **Infrastructure:** Docker Compose, GitHub Actions
-- **Testing:** Pytest, FastAPI TestClient, Flutter Test
-
-## Quick start
+## Run locally
 
 ```bash
 cp .env.example .env
@@ -83,7 +79,7 @@ flutter test
 
 Run Android Emulator with `--dart-define=API_BASE_URL=http://10.0.2.2:8000/api/v1`.
 
-## Project structure
+## Repository layout
 
 ```text
 backend/      FastAPI application, migrations, and API tests
@@ -93,23 +89,8 @@ scripts/      reproducible Flutter platform bootstrap
 compose.yaml  PostgreSQL and backend development stack
 ```
 
-## Security and operational notes
+## Notes
 
-- Passwords are stored as bcrypt hashes.
-- JWT secrets and database credentials are loaded from environment variables.
-- Production mode rejects placeholder secrets and unsupported database configuration.
-- Organization scope is derived from the authenticated user.
-- Viewer accounts cannot modify inventory.
-- Regulatory reports are calculation aids and must be checked against current official requirements.
-
-See [docs/security.md](docs/security.md) for implementation details.
-
-## Project status
-
-The repository demonstrates a complete asset-management workflow with backend and client CI. Generated platform files are reproducible, while local databases, environment files, and operational data remain outside Git.
-
-## Author
-
-Sergey Inozemtsev — Python backend developer
-
-GitHub: https://github.com/lisovcoff
+- Secrets and environment-specific settings are loaded from environment variables.
+- This public repository excludes organization data, deployment credentials, and real license codes.
+- Regulatory reports should be validated against current local requirements before operational use.
